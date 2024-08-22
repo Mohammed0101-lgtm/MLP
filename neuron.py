@@ -1,10 +1,9 @@
 import numpy as np
 import torch
 
-block_size = 8
+block_size = 8 
 
 class NeuralNet():
-    
     def __init__(self, layers_sizes, reg_lambda=0, bias=True):
         self.n_layers = len(layers_sizes)
         self.layers_sizes = layers_sizes
