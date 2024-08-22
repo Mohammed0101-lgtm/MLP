@@ -4,6 +4,7 @@ import torch
 block_size = 8
 
 class NeuralNet():
+    
     def __init__(self, layers_sizes, reg_lambda=0, bias=True):
         self.n_layers = len(layers_sizes)
         self.layers_sizes = layers_sizes
@@ -11,6 +12,7 @@ class NeuralNet():
         self.weights = self.initialize_weights()
         self.lambda_r = reg_lambda
 
+    
     def feed_forward(self, input_data):
         input_layer = input_data
         n_examples = input_layer.shape[0]
@@ -37,6 +39,7 @@ class NeuralNet():
         
         return A, Z
 
+    
     def initialize_weights(self):
         weights = []
         next_layers_size = self.layers_sizes.copy()
@@ -52,12 +55,15 @@ class NeuralNet():
         
         return weights
 
+    
     def relu(self, val):
         return np.maximum(val, 0)
 
+    
     def mean_squared_error(self, predicted, actual):
         return np.mean((predicted - actual) ** 2)
 
+    
     def _backward(self, x, y):
         n_examples = x.shape[0]
         A, Z = self.feed_forward(x)
@@ -87,6 +93,7 @@ class NeuralNet():
         
         return gradients
 
+    
     def train(self, feature_mat, class_vec, iterations=400, learning_rate=0.01):
         for _ in range(iterations):
             gradients = self._backward(feature_mat, class_vec)
@@ -99,6 +106,7 @@ class NeuralNet():
                 mse = self.mean_squared_error(predictions[-1], class_vec)
                 print(f"Iteration {_}: MSE = {mse}")
 
+    
     def unroll_weights(self, rolled_data):
         unrolled_array = np.array([])
 
@@ -106,6 +114,7 @@ class NeuralNet():
             unrolled_array = np.concatenate((unrolled_array, one_layer.flatten("F")))
         
         return unrolled_array
+
 
     def roll_weights(self, unrolled_data):
         next_layers_sizes = self.layers_sizes.copy()
@@ -122,12 +131,14 @@ class NeuralNet():
 
         return rolled_list
 
+
 def get_batch(sample):
     data = train_data if sample == 'train' else val_data
     index = torch.randint(len(data) - block_size, (batch_size,))
     x = torch.stack([data[i : i + block_size] for i in index])
     y = torch.stack([data[i + 1 : i + block_size + 1] for i in index])
     return x, y
+
 
 def get_data(filename):
     with open(filename) as file:
@@ -139,6 +150,7 @@ def get_data(filename):
     val_data = data[n:]
 
     return train_data, val_data
+
 
 if __name__ == '__main__':
     layers_sizes = [block_size, 128, 64, 1]  
